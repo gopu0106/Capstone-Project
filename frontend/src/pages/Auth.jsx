@@ -26,52 +26,67 @@ const Auth = () => {
 
     return (
         <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
-            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - 120px)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - 120px)', perspective: '1000px' }}
         >
-            <div className="input-glass" style={{ 
-                width: '100%', 
-                maxWidth: '450px', 
-                padding: '40px', 
-                borderRadius: 'var(--radius-lg)',
-                border: '1px solid var(--glass-border)',
-                boxShadow: 'var(--shadow-lg)'
-            }}>
-                <h2 style={{ textAlign: 'center', marginBottom: '8px', fontSize: '24px', fontWeight: '700' }}>
-                    {isLogin ? 'Sign In' : 'Create Account'}
-                </h2>
-                <p style={{ textAlign: 'center', marginBottom: '32px', color: 'var(--text-secondary)' }}>
-                    to continue to YouTube
-                </p>
+            <motion.div 
+                className="input-glass" 
+                layout
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                style={{ 
+                    width: '100%', 
+                    maxWidth: '450px', 
+                    padding: '40px', 
+                    borderRadius: 'var(--radius-xl)',
+                    border: '1px solid var(--glass-border)',
+                    boxShadow: 'var(--shadow-lg)'
+                }}
+            >
+                <motion.div layout>
+                    <h2 style={{ textAlign: 'center', marginBottom: '8px', fontSize: '28px', fontWeight: '800', letterSpacing: '-0.5px' }}>
+                        {isLogin ? 'Welcome Back' : 'Join Youtube'}
+                    </h2>
+                    <p style={{ textAlign: 'center', marginBottom: '32px', color: 'var(--text-secondary)', fontSize: '15px' }}>
+                        {isLogin ? 'Continue your creative journey' : 'Start sharing your story with the world'}
+                    </p>
+                </motion.div>
 
                 {error && (
                     <motion.p 
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        style={{ color: '#ff4444', marginBottom: '20px', textAlign: 'center', fontSize: '14px', backgroundColor: 'rgba(255, 68, 68, 0.1)', padding: '10px', borderRadius: 'var(--radius-md)' }}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        style={{ color: '#ff4444', marginBottom: '24px', textAlign: 'center', fontSize: '14px', backgroundColor: 'rgba(255, 68, 68, 0.1)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,68,68,0.2)' }}
                     >
                         {error}
                     </motion.p>
                 )}
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    {!isLogin && (
-                        <input 
-                            type="text" 
-                            name="username" 
-                            placeholder="Username" 
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                        />
-                    )}
+                    <AnimatePresence mode="popLayout">
+                        {!isLogin && (
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 20 }}
+                            >
+                                <input 
+                                    type="text" 
+                                    name="username" 
+                                    placeholder="Username" 
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                     <input 
                         type="email" 
                         name="email" 
-                        placeholder="Email" 
+                        placeholder="Email address" 
                         value={formData.email}
                         onChange={handleChange}
                         required
@@ -84,22 +99,27 @@ const Auth = () => {
                         onChange={handleChange}
                         required
                     />
-                    <button type="submit" className="btn btn-accent" style={{ padding: '12px', marginTop: '12px', fontSize: '15px' }}>
-                        {isLogin ? 'Login' : 'Register'}
+                    <button type="submit" className="btn btn-accent" style={{ padding: '14px', marginTop: '12px', fontSize: '16px', fontWeight: '700' }}>
+                        {isLogin ? 'Sign In' : 'Create Account'}
                     </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--text-secondary)', fontSize: '13px' }}>
+                        <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--glass-border)' }} />
+                        <span>OR</span>
+                        <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--glass-border)' }} />
+                    </div>
                 </form>
 
-                <div style={{ marginTop: '32px', textAlign: 'center', fontSize: '14px', color: 'var(--text-secondary)' }}>
-                    <span>{isLogin ? "Don't have an account? " : "Already have an account? "}</span>
+                <div style={{ marginTop: '32px', textAlign: 'center', fontSize: '15px', color: 'var(--text-secondary)' }}>
+                    <span>{isLogin ? "New to YouTube? " : "Already have an account? "}</span>
                     <button 
                         onClick={() => setIsLogin(!isLogin)}
                         className="btn-ghost"
-                        style={{ color: '#3ea6ff', fontWeight: '600', padding: '4px 8px' }}
+                        style={{ color: '#3ea6ff', fontWeight: '700', padding: '4px 8px', fontSize: '15px' }}
                     >
-                        {isLogin ? 'Create account' : 'Sign in instead'}
+                        {isLogin ? 'Sign up now' : 'Log in here'}
                     </button>
                 </div>
-            </div>
+            </motion.div>
         </motion.div>
     );
 };
