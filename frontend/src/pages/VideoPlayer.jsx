@@ -6,11 +6,13 @@ import { AuthContext } from '../context/AuthContext';
 import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
 import { formatViews, formatTimeAgo } from '../utils/format';
 import RecommendedVideoCard from '../components/RecommendedVideoCard';
+import PlayerSkeleton from '../components/PlayerSkeleton';
 
 const VideoPlayer = () => {
     const { id } = useParams();
     const { user } = useContext(AuthContext);
     const [video, setVideo] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [comments, setComments] = useState([]);
     const [recommendedVideos, setRecommendedVideos] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -27,6 +29,8 @@ const VideoPlayer = () => {
                 setRecommendedVideos(recRes.data.filter(v => v._id !== id).slice(0, 10));
             } catch (error) {
                 console.error('Error fetching video data:', error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchVideoData();
@@ -84,7 +88,8 @@ const VideoPlayer = () => {
         }
     };
 
-    if (!video) return <div style={{ padding: '20px', color: 'var(--text-secondary)' }}>Loading...</div>;
+    if (loading) return <PlayerSkeleton />;
+    if (!video) return <div style={{ padding: '80px', textAlign: 'center', color: 'var(--text-secondary)' }}>Video not found</div>;
 
     const isLiked = video.likes?.includes(user?._id);
     const isDisliked = video.dislikes?.includes(user?._id);
