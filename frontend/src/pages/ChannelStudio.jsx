@@ -1,7 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
-import { Trash2, Edit3, Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ChannelStudio = () => {
     const { user } = useContext(AuthContext);
@@ -72,8 +69,6 @@ const ChannelStudio = () => {
     const handleUploadVideo = async (e) => {
         e.preventDefault();
         try {
-            // We need a channel ID to upload a video
-            // For this project, let's assume we create a default channel if none exists
             let activeChannelId = channel?._id;
             if (!activeChannelId) {
                 const cRes = await axios.post(`http://localhost:5001/api/channels`, { channelName: `${user.username}'s Channel`, description: 'My first channel' }, {
@@ -109,70 +104,117 @@ const ChannelStudio = () => {
         }
     };
 
-    if (!user) return <div style={{ padding: '20px' }}>Please login to access Studio.</div>;
+    if (!user) return <div style={{ padding: '20px', color: 'var(--text-secondary)' }}>Please login to access Studio.</div>;
 
     return (
-        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}
+        >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-                <h1>Channel Content</h1>
+                <h1 style={{ fontSize: '24px', fontWeight: '700' }}>Channel Analytics</h1>
                 <button 
                     onClick={() => setIsUploadingVideo(true)}
-                    style={{ backgroundColor: '#3ea6ff', color: 'black', padding: '10px 16px', borderRadius: '4px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}
+                    className="btn btn-accent"
                 >
-                    <Plus size={20} /> Create
+                    <Plus size={20} /> <span style={{ marginLeft: '4px' }}>Create</span>
                 </button>
             </div>
 
-            {(isUploadingVideo || editingVideo) && (
-                <div style={modalOverlay}>
-                    <div style={modalContent}>
-                        <h2>{editingVideo ? 'Edit Video' : 'Upload Video'}</h2>
-                        <form onSubmit={editingVideo ? handleUpdateVideo : handleUploadVideo} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '16px' }}>
-                            <input style={inputStyle} placeholder="Title" value={videoForm.title} onChange={e => setVideoForm({...videoForm, title: e.target.value})} required />
-                            <textarea style={{...inputStyle, height: '100px'}} placeholder="Description" value={videoForm.description} onChange={e => setVideoForm({...videoForm, description: e.target.value})} required />
-                            <input style={inputStyle} placeholder="Video URL (mp4)" value={videoForm.videoUrl} onChange={e => setVideoForm({...videoForm, videoUrl: e.target.value})} disabled={!!editingVideo} required />
-                            <input style={inputStyle} placeholder="Thumbnail URL" value={videoForm.thumbnailUrl} onChange={e => setVideoForm({...videoForm, thumbnailUrl: e.target.value})} required />
-                            <select style={inputStyle} value={videoForm.category} onChange={e => setVideoForm({...videoForm, category: e.target.value})}>
-                                <option value="Music">Music</option>
-                                <option value="Gaming">Gaming</option>
-                                <option value="Code">Code</option>
-                                <option value="News">News</option>
-                            </select>
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
-                                <button type="button" onClick={() => { setIsUploadingVideo(false); setEditingVideo(null); }}>Cancel</button>
-                                <button type="submit" style={{ backgroundColor: '#3ea6ff', color: 'black', padding: '8px 16px', borderRadius: '4px', fontWeight: 'bold' }}>{editingVideo ? 'Update' : 'Upload'}</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+            <AnimatePresence>
+                {(isUploadingVideo || editingVideo) && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={modalOverlay}
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.9, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.9, y: 20 }}
+                            className="input-glass" 
+                            style={modalStyle}
+                        >
+                            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '24px' }}>{editingVideo ? 'Edit details' : 'Upload video'}</h2>
+                            <form onSubmit={editingVideo ? handleUpdateVideo : handleUploadVideo} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                <input placeholder="Title (required)" value={videoForm.title} onChange={e => setVideoForm({...videoForm, title: e.target.value})} required />
+                                <textarea 
+                                    style={{ 
+                                        width: '100%', 
+                                        backgroundColor: 'var(--bg-secondary)', 
+                                        border: '1px solid var(--glass-border)', 
+                                        borderRadius: 'var(--radius-md)', 
+                                        padding: '12px', 
+                                        color: 'white', 
+                                        minHeight: '120px',
+                                        fontSize: '14px',
+                                        outline: 'none'
+                                    }} 
+                                    placeholder="Description" 
+                                    value={videoForm.description} 
+                                    onChange={e => setVideoForm({...videoForm, description: e.target.value})} 
+                                    required 
+                                />
+                                <input placeholder="Video URL (mp4)" value={videoForm.videoUrl} onChange={e => setVideoForm({...videoForm, videoUrl: e.target.value})} disabled={!!editingVideo} required />
+                                <input placeholder="Thumbnail URL" value={videoForm.thumbnailUrl} onChange={e => setVideoForm({...videoForm, thumbnailUrl: e.target.value})} required />
+                                <select 
+                                    style={{ 
+                                        width: '100%', 
+                                        backgroundColor: 'var(--bg-secondary)', 
+                                        border: '1px solid var(--glass-border)', 
+                                        padding: '10px', 
+                                        borderRadius: 'var(--radius-md)', 
+                                        color: 'white',
+                                        outline: 'none'
+                                    }} 
+                                    value={videoForm.category} 
+                                    onChange={e => setVideoForm({...videoForm, category: e.target.value})}
+                                >
+                                    <option value="Music">Music</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="Code">Code</option>
+                                    <option value="News">News</option>
+                                </select>
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
+                                    <button type="button" className="btn btn-ghost" onClick={() => { setIsUploadingVideo(false); setEditingVideo(null); }}>Cancel</button>
+                                    <button type="submit" className="btn btn-primary">{editingVideo ? 'Save Changes' : 'Upload'}</button>
+                                </div>
+                            </form>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            <div style={{ backgroundColor: '#1e1e1e', borderRadius: '8px', overflow: 'hidden', border: '1px solid #333' }}>
+            <div style={{ backgroundColor: 'var(--bg-secondary)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-md)' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                    <thead style={{ borderBottom: '1px solid #333', color: '#aaaaaa', fontSize: '14px' }}>
+                    <thead style={{ borderBottom: '1px solid var(--glass-border)', color: 'var(--text-secondary)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
                         <tr>
-                            <th style={{ padding: '16px' }}>Video</th>
-                            <th style={{ padding: '16px' }}>Date</th>
-                            <th style={{ padding: '16px' }}>Views</th>
-                            <th style={{ padding: '16px' }}>Actions</th>
+                            <th style={{ padding: '16px 24px' }}>Video</th>
+                            <th style={{ padding: '16px 24px' }}>Date</th>
+                            <th style={{ padding: '16px 24px' }}>Views</th>
+                            <th style={{ padding: '16px 24px' }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {videos.map(video => (
-                            <tr key={video._id} style={{ borderBottom: '1px solid #333' }}>
-                                <td style={{ padding: '16px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                                    <img src={video.thumbnailUrl} style={{ width: '120px', aspectRatio: '16/9', objectFit: 'cover', borderRadius: '4px' }} alt="" />
-                                    <div>
-                                        <div style={{ fontWeight: '500' }}>{video.title}</div>
-                                        <div style={{ fontSize: '12px', color: '#aaaaaa', marginTop: '4px' }}>{video.description.substring(0, 50)}...</div>
+                            <tr key={video._id} style={{ borderBottom: '1px solid var(--glass-border)', transition: 'background-color 0.2s' }} className="table-row-hover">
+                                <td style={{ padding: '16px 24px', display: 'flex', gap: '16px', alignItems: 'center' }}>
+                                    <img src={video.thumbnailUrl} style={{ width: '120px', aspectRatio: '16/9', objectFit: 'cover', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }} alt="" />
+                                    <div style={{ minWidth: 0 }}>
+                                        <div style={{ fontWeight: '600', fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{video.title}</div>
+                                        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>{video.description.substring(0, 50)}...</div>
                                     </div>
                                 </td>
-                                <td style={{ padding: '16px', fontSize: '14px' }}>{new Date(video.uploadDate).toLocaleDateString()}</td>
-                                <td style={{ padding: '16px', fontSize: '14px' }}>{video.views}</td>
-                                <td style={{ padding: '16px' }}>
-                                    <div style={{ display: 'flex', gap: '16px' }}>
-                                        <button onClick={() => startEditing(video)} style={{ color: '#aaaaaa' }}><Edit3 size={18} /></button>
-                                        <button onClick={() => handleDeleteVideo(video._id)} style={{ color: '#aaaaaa' }}><Trash2 size={18} /></button>
+                                <td style={{ padding: '16px 24px', fontSize: '14px', color: 'var(--text-secondary)' }}>{new Date(video.uploadDate).toLocaleDateString()}</td>
+                                <td style={{ padding: '16px 24px', fontSize: '14px', fontWeight: '500' }}>{video.views}</td>
+                                <td style={{ padding: '16px 24px' }}>
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <button onClick={() => startEditing(video)} className="btn-icon" style={{ color: 'var(--text-secondary)' }}><Edit3 size={18} /></button>
+                                        <button onClick={() => handleDeleteVideo(video._id)} className="btn-icon" style={{ color: 'var(--text-secondary)' }}><Trash2 size={18} /></button>
                                     </div>
                                 </td>
                             </tr>
@@ -180,24 +222,29 @@ const ChannelStudio = () => {
                     </tbody>
                 </table>
                 {videos.length === 0 && (
-                    <div style={{ textAlign: 'center', padding: '40px', color: '#aaaaaa' }}>No videos found. Start by uploading one!</div>
+                    <div style={{ textAlign: 'center', padding: '80px 40px', color: 'var(--text-secondary)' }}>
+                        <div style={{ fontSize: '16px', fontWeight: '500' }}>No content available</div>
+                        <p style={{ marginTop: '8px', fontSize: '14px' }}>Upload your first video to get started!</p>
+                    </div>
                 )}
             </div>
-        </div>
+            <style>{`
+                .table-row-hover:hover {
+                    background-color: var(--bg-tertiary);
+                }
+            `}</style>
+        </motion.div>
     );
 };
 
 const modalOverlay = {
     position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-    backgroundColor: 'rgba(0,0,0,0.8)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000
+    backgroundColor: 'rgba(0,0,0,0.85)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000,
+    backdropFilter: 'blur(4px)'
 };
 
-const modalContent = {
-    backgroundColor: '#1e1e1e', padding: '32px', borderRadius: '12px', width: '100%', maxWidth: '500px', border: '1px solid #333'
-};
-
-const inputStyle = {
-    padding: '12px', backgroundColor: '#0f0f0f', border: '1px solid #333', borderRadius: '4px', color: 'white', fontSize: '14px'
+const modalStyle = {
+    padding: '32px', borderRadius: 'var(--radius-lg)', width: '100%', maxWidth: '560px', border: '1px solid var(--glass-border)'
 };
 
 export default ChannelStudio;

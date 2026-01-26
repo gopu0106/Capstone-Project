@@ -1,7 +1,4 @@
-import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import { motion } from 'framer-motion';
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -28,25 +25,39 @@ const Auth = () => {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '60px' }}>
-            <div style={{ 
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3 }}
+            style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 'calc(100vh - 120px)' }}
+        >
+            <div className="input-glass" style={{ 
                 width: '100%', 
                 maxWidth: '450px', 
-                backgroundColor: '#1e1e1e', 
                 padding: '40px', 
-                borderRadius: '8px',
-                border: '1px solid #333'
+                borderRadius: 'var(--radius-lg)',
+                border: '1px solid var(--glass-border)',
+                boxShadow: 'var(--shadow-lg)'
             }}>
-                <h2 style={{ textAlign: 'center', marginBottom: '8px', fontSize: '24px' }}>
+                <h2 style={{ textAlign: 'center', marginBottom: '8px', fontSize: '24px', fontWeight: '700' }}>
                     {isLogin ? 'Sign In' : 'Create Account'}
                 </h2>
-                <p style={{ textAlign: 'center', marginBottom: '24px', color: '#aaaaaa' }}>
+                <p style={{ textAlign: 'center', marginBottom: '32px', color: 'var(--text-secondary)' }}>
                     to continue to YouTube
                 </p>
 
-                {error && <p style={{ color: '#ff4444', marginBottom: '16px', textAlign: 'center' }}>{error}</p>}
+                {error && (
+                    <motion.p 
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        style={{ color: '#ff4444', marginBottom: '20px', textAlign: 'center', fontSize: '14px', backgroundColor: 'rgba(255, 68, 68, 0.1)', padding: '10px', borderRadius: 'var(--radius-md)' }}
+                    >
+                        {error}
+                    </motion.p>
+                )}
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     {!isLogin && (
                         <input 
                             type="text" 
@@ -55,7 +66,6 @@ const Auth = () => {
                             value={formData.username}
                             onChange={handleChange}
                             required
-                            style={inputStyle}
                         />
                     )}
                     <input 
@@ -65,7 +75,6 @@ const Auth = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        style={inputStyle}
                     />
                     <input 
                         type="password" 
@@ -74,41 +83,25 @@ const Auth = () => {
                         value={formData.password}
                         onChange={handleChange}
                         required
-                        style={inputStyle}
                     />
-                    <button type="submit" style={{ 
-                        backgroundColor: '#3ea6ff', 
-                        color: 'black', 
-                        padding: '10px', 
-                        borderRadius: '4px', 
-                        fontWeight: 'bold',
-                        marginTop: '8px'
-                    }}>
+                    <button type="submit" className="btn btn-accent" style={{ padding: '12px', marginTop: '12px', fontSize: '15px' }}>
                         {isLogin ? 'Login' : 'Register'}
                     </button>
                 </form>
 
-                <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '14px', color: '#aaaaaa' }}>
-                    {isLogin ? "Don't have an account? " : "Already have an account? "}
+                <div style={{ marginTop: '32px', textAlign: 'center', fontSize: '14px', color: 'var(--text-secondary)' }}>
+                    <span>{isLogin ? "Don't have an account? " : "Already have an account? "}</span>
                     <button 
                         onClick={() => setIsLogin(!isLogin)}
-                        style={{ color: '#3ea6ff', fontWeight: '500' }}
+                        className="btn-ghost"
+                        style={{ color: '#3ea6ff', fontWeight: '600', padding: '4px 8px' }}
                     >
-                        {isLogin ? 'Create one' : 'Sign in instead'}
+                        {isLogin ? 'Create account' : 'Sign in instead'}
                     </button>
-                </p>
+                </div>
             </div>
-        </div>
+        </motion.div>
     );
-};
-
-const inputStyle = {
-    padding: '12px',
-    backgroundColor: 'transparent',
-    border: '1px solid #333',
-    borderRadius: '4px',
-    color: 'white',
-    fontSize: '16px'
 };
 
 export default Auth;
