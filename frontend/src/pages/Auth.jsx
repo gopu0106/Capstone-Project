@@ -1,4 +1,8 @@
-import { motion } from 'framer-motion';
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);

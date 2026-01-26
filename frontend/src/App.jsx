@@ -16,17 +16,20 @@ const AppContent = () => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="app">
+    <div className={`app ${!isSidebarOpen ? 'sidebar-closed' : ''}`}>
       <Header toggleSidebar={toggleSidebar} />
       <div style={{ display: 'flex', marginTop: '56px' }}>
         <Sidebar isOpen={isSidebarOpen} />
-        <main style={{ 
-          flex: 1, 
-          padding: '20px', 
-          marginLeft: isSidebarOpen ? '240px' : '72px', 
-          minHeight: 'calc(100vh - 56px)',
-          backgroundColor: 'var(--bg-color)'
-        }}>
+        <main 
+          className="main-content"
+          style={{ 
+            flex: 1, 
+            padding: '20px', 
+            minHeight: 'calc(100vh - 56px)',
+            backgroundColor: 'var(--bg-color)',
+            transition: 'margin-left var(--transition-normal)'
+          }}
+        >
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />

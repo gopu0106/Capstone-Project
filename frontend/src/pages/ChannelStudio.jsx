@@ -1,3 +1,6 @@
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Edit3, Plus } from 'lucide-react';
 import { formatViews } from '../utils/format';

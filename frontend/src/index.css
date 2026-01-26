@@ -250,12 +250,20 @@ input:focus {
 
 main {
   transition: margin-left var(--transition-normal);
+  margin-left: 240px;
+}
+
+.sidebar-closed + main {
+  margin-left: 72px;
+}
+
+@media (max-width: 768px) {
+  main, .sidebar-closed + main {
+    margin-left: 0 !important;
+  }
 }
 
 @media (max-width: 1200px) {
-  .sidebar {
-    width: 72px !important;
-  }
   .sidebar span {
     display: none;
   }
@@ -269,11 +277,17 @@ main {
   .sidebar.mobile-open {
     transform: translateX(0);
   }
-  .header form {
-    display: none !important;
+  .search-container {
+    margin: 0 10px;
+  }
+}
+
+@media (max-width: 500px) {
+  .search-container {
+    display: none;
   }
   .search-icon-mobile {
-    display: block !important;
+    display: flex !important;
   }
 }
 

@@ -49,6 +49,9 @@ const Header = ({ toggleSidebar }) => {
             </form>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button className="btn-icon search-icon-mobile" style={{ display: 'none' }}>
+                    <Search size={20} />
+                </button>
                 <button className="btn-icon">
                     <Video size={20} />
                 </button>
