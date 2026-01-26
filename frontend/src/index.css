@@ -248,28 +248,37 @@ input:focus {
   font-weight: 600;
 }
 
+main {
+  transition: margin-left var(--transition-normal);
+}
+
 @media (max-width: 1200px) {
   .sidebar {
-    width: 72px;
+    width: 72px !important;
   }
   .sidebar span {
     display: none;
-  }
-  main {
-    margin-left: 72px !important;
   }
 }
 
 @media (max-width: 768px) {
   .sidebar {
     transform: translateX(-100%);
+    width: 240px !important;
   }
-  main {
-    margin-left: 0 !important;
+  .sidebar.mobile-open {
+    transform: translateX(0);
   }
   .header form {
     display: none !important;
   }
+  .search-icon-mobile {
+    display: block !important;
+  }
+}
+
+.search-icon-mobile {
+  display: none;
 }
 
 .video-grid {

@@ -24,8 +24,8 @@ function App() {
               flex: 1, 
               padding: '20px', 
               marginLeft: isSidebarOpen ? '240px' : '72px', 
-              transition: 'margin-left 0.3s ease',
-              minHeight: 'calc(100vh - 56px)' 
+              minHeight: 'calc(100vh - 56px)',
+              backgroundColor: 'var(--bg-color)'
             }}>
               <Routes>
                 <Route path="/" element={<Home />} />
