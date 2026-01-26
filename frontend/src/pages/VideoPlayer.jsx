@@ -150,11 +150,11 @@ const VideoPlayer = () => {
                     <p style={{ marginTop: '8px', fontSize: '14px', whiteSpace: 'pre-wrap', lineHeight: '20px' }}>{video.description}</p>
                 </div>
 
-                <div style={{ marginTop: '24px' }}>
-                    <h3 style={{ fontSize: '20px', marginBottom: '24px', fontWeight: '700' }}>{comments.length} Comments</h3>
+                <div style={{ marginTop: '32px' }}>
+                    <h3 style={{ fontSize: '20px', marginBottom: '24px', fontWeight: '800', letterSpacing: '-0.2px' }}>{comments.length} Comments</h3>
                     {user && (
-                        <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: '16px', marginBottom: '32px' }}>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid var(--glass-border)' }}>
+                        <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: '16px', marginBottom: '40px' }}>
+                            <div className="video-avatar" style={{ border: 'none', boxShadow: 'none' }}>
                                 {user.username.charAt(0).toUpperCase()}
                             </div>
                             <div style={{ flex: 1 }}>
@@ -163,15 +163,17 @@ const VideoPlayer = () => {
                                     placeholder="Add a comment..." 
                                     value={newComment}
                                     onChange={(e) => setNewComment(e.target.value)}
-                                    style={{ width: '100%', backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid var(--glass-border)', borderRadius: 0, padding: '8px 0', fontSize: '14px' }}
+                                    style={{ width: '100%', backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid var(--glass-border)', borderRadius: 0, padding: '8px 0', fontSize: '15px', outline: 'none', transition: 'border-color 0.2s' }}
+                                    onFocus={(e) => e.target.style.borderBottomColor = '#fff'}
+                                    onBlur={(e) => e.target.style.borderBottomColor = 'var(--glass-border)'}
                                 />
-                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '12px' }}>
-                                    <button type="button" className="btn btn-ghost" onClick={() => setNewComment('')}>Cancel</button>
+                                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '12px' }}>
+                                    <button type="button" className="btn btn-ghost" style={{ fontSize: '14px', padding: '8px 12px' }} onClick={() => setNewComment('')}>Cancel</button>
                                     <button 
                                         type="submit" 
                                         disabled={!newComment.trim()}
                                         className="btn btn-accent"
-                                        style={{ padding: '8px 16px', opacity: newComment.trim() ? 1 : 0.5 }}
+                                        style={{ padding: '8px 16px', fontSize: '14px', fontWeight: '600', opacity: newComment.trim() ? 1 : 0.5 }}
                                     >
                                         Comment
                                     </button>
@@ -182,19 +184,24 @@ const VideoPlayer = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         {comments.map(comment => (
                             <div key={comment._id} style={{ display: 'flex', gap: '16px' }}>
-                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--bg-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid var(--glass-border)', fontSize: '14px', fontWeight: '600' }}>
+                                <div className="video-avatar" style={{ border: 'none', boxShadow: 'none' }}>
                                     {comment.userId?.username?.charAt(0).toUpperCase()}
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                         <div>
-                                            <p style={{ fontSize: '13px', fontWeight: '700' }}>
-                                                @{comment.userId?.username} <span style={{ fontWeight: 'normal', color: 'var(--text-secondary)', marginLeft: '8px' }}>{formatTimeAgo(comment.createdAt)}</span>
+                                            <p style={{ fontSize: '13px', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                @{comment.userId?.username} <span style={{ fontWeight: '500', color: 'var(--text-secondary)', fontSize: '12px' }}>{formatTimeAgo(comment.createdAt)}</span>
                                             </p>
-                                            <p style={{ fontSize: '14px', marginTop: '4px', lineHeight: '20px' }}>{comment.text}</p>
+                                            <p style={{ fontSize: '15px', marginTop: '4px', lineHeight: '20px', color: 'var(--text-primary)' }}>{comment.text}</p>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '8px' }}>
+                                                <button className="btn-ghost" style={{ padding: '4px', borderRadius: '50%' }}><ThumbsUp size={16} /></button>
+                                                <button className="btn-ghost" style={{ padding: '4px', borderRadius: '50%' }}><ThumbsDown size={16} /></button>
+                                                <button className="btn-ghost" style={{ fontSize: '12px', fontWeight: '600', padding: '4px 8px' }}>Reply</button>
+                                            </div>
                                         </div>
                                         {user && user._id === comment.userId?._id && (
-                                            <button onClick={() => handleDeleteComment(comment._id)} className="btn-icon" style={{ color: 'var(--text-secondary)' }}>
+                                            <button onClick={() => handleDeleteComment(comment._id)} className="btn-icon" style={{ color: 'var(--text-secondary)', width: '32px', height: '32px' }}>
                                                 <MoreHorizontal size={18} />
                                             </button>
                                         )}
