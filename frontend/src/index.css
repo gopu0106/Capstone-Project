@@ -284,8 +284,16 @@ main {
 .video-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-  padding: 20px;
+  gap: 20px;
+  padding: 0;
+  width: 100%;
+}
+
+@media (max-width: 500px) {
+  .video-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
 }
 
 .video-card {
