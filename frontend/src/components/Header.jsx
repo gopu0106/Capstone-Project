@@ -1,12 +1,20 @@
 import React, { useState, useContext } from 'react';
-import { Menu, Search, Video, Bell, User as UserIcon } from 'lucide-react';
+import { Menu, Search, Video, Bell, User as UserIcon, LogOut } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 const Header = ({ toggleSidebar }) => {
+    const { user, logout } = useContext(AuthContext);
+    const { showToast } = useToast();
     const [searchQuery, setSearchQuery] = useState('');
-    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        showToast('Logged out successfully');
+        navigate('/');
+    };
 
     const handleSearch = (e) => {
         e.preventDefault();

@@ -7,10 +7,12 @@ import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
 import { formatViews, formatTimeAgo } from '../utils/format';
 import RecommendedVideoCard from '../components/RecommendedVideoCard';
 import PlayerSkeleton from '../components/PlayerSkeleton';
+import { useToast } from '../context/ToastContext';
 
 const VideoPlayer = () => {
     const { id } = useParams();
     const { user } = useContext(AuthContext);
+    const { showToast } = useToast();
     const [video, setVideo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [comments, setComments] = useState([]);
@@ -48,8 +50,10 @@ const VideoPlayer = () => {
             });
             setComments([res.data, ...comments]);
             setNewComment('');
+            showToast('Comment added successfully');
         } catch (error) {
             console.error('Error adding comment:', error);
+            showToast('Failed to add comment', 'error');
         }
     };
 
@@ -60,8 +64,10 @@ const VideoPlayer = () => {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
             setVideo(res.data);
+            showToast(isLiked ? 'Removed from liked videos' : 'Added to liked videos');
         } catch (error) {
             console.error('Error liking video:', error);
+            showToast('Failed to update like', 'error');
         }
     };
 
