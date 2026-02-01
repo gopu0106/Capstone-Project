@@ -2,21 +2,21 @@
 
 This is a complete YouTube Clone Capstone Project built using the MERN stack, hardened for stability and designed for seamless academic evaluation.
 
-## Deployment Link (GitHub)
+## 🚀 Deployment Link (GitHub)
 
 [https://github.com/gopu0106/Capstone-Project.git](https://github.com/gopu0106/Capstone-Project.git)
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 - **Frontend**: React, Vite, Axios, Lucide React, Framer Motion
-- **Backend**: Node.js, Express, MongoDB, Mongoose, JWT, Bcrypt
+- **Backend**: Node.js, Express, MongoDB, Mongoose, JWT, BcryptJS (Pure JS)
 - **Styling**: Vanilla CSS (Modern Premium UI with Glassmorphism)
 
 ---
 
-## Proper Running Instructions (Step-by-Step)
+## 🏃‍♂️ Proper Running Instructions (Step-by-Step)
 
 ### 1. Prerequisites
 
@@ -58,13 +58,38 @@ npm run dev
 
 ---
 
-## Testing Guide for Evaluators
+## 🔧 Troubleshooting (Smooth First-Try)
+
+If you encounter issues on the first run, try these standard fixes:
+
+### 1. "Cannot find module" or Architecture Mismatch (Mac/ARM64)
+
+If either backend or frontend fails to start with a "missing binary" or "dlopen" error:
+
+```bash
+# In the project root, clean everything and reinstall
+rm -rf backend/node_modules frontend/node_modules
+cd backend && npm install
+cd ../frontend && npm install
+```
+
+### 2. Port Conflicts
+
+If port `5173` is busy, Vite might switch to `5174`. The backend is pre-configured to handle ports `5173`, `5174`, and `5175` via CORS automatically.
+
+### 3. Database Connection
+
+Ensure MongoDB is running locally before starting the backend. If you use MongoDB Atlas, update the `MONGODB_URI` in `.env`.
+
+---
+
+## 🧪 Testing Guide for Evaluators
 
 ### 1. Public Features (No Login Required)
 
 - **Home Page**: Browse the automatically seeded video grid.
 - **Search**: Search for videos by title using the top bar.
-- **Video Player**: Click any video to watch it. The player uses HTML5 with dynamic sources.
+- **Video Player**: Click any video to watch it.
 - **Comments**: View existing comments under each video.
 
 ### 2. Authenticated Features
@@ -76,13 +101,13 @@ npm run dev
 
 **Actions after login:**
 
-- **Like/Dislike**: Toggle likes/dislikes on any video (persists to DB).
-- **Comment CRUD**: Add new comments, edit your own comments, or delete them.
-- **Channel Studio**: Upload your own videos or manage existing ones.
+- **Like/Dislike**: Toggle likes/dislikes on any video.
+- **Comment CRUD**: Add, edit, or delete comments.
+- **Channel Studio**: Upload or manage your own videos.
 
 ---
 
-## Hardening & Stability Features
+## 🛡️ Hardening & Stability Features
 
 - **Zero-Crash First Load**: Defensive coding (optional chaining/null checks) prevents "undefined" errors even on fresh machines.
 - **Graceful Error Handling**: Handlers for database connection failures and malformed localStorage data.
@@ -90,7 +115,7 @@ npm run dev
 
 ---
 
-## Author
+## 👨‍💻 Author
 
 **Gopal Ramesh Tengale**
 Project for Internshala MERN Stack Capstone.
