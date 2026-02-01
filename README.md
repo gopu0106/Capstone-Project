@@ -2,13 +2,13 @@
 
 This is a complete YouTube Clone Capstone Project built using the MERN stack, hardened for stability and designed for seamless academic evaluation.
 
-## 🚀 Deployment Link (GitHub)
+##  Deployment Link (GitHub)
 
 [https://github.com/gopu0106/Capstone-Project.git](https://github.com/gopu0106/Capstone-Project.git)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React, Vite, Axios, Lucide React, Framer Motion
 - **Backend**: Node.js, Express, MongoDB, Mongoose, JWT, BcryptJS (Pure JS)
@@ -16,7 +16,7 @@ This is a complete YouTube Clone Capstone Project built using the MERN stack, ha
 
 ---
 
-## 🏃‍♂️ Proper Running Instructions (Step-by-Step)
+## Proper Running Instructions (Step-by-Step)
 
 ### 1. Prerequisites
 
@@ -83,7 +83,7 @@ Ensure MongoDB is running locally before starting the backend. If you use MongoD
 
 ---
 
-## 🧪 Testing Guide for Evaluators
+## Testing Guide for Evaluators
 
 ### 1. Public Features (No Login Required)
 
@@ -107,7 +107,7 @@ Ensure MongoDB is running locally before starting the backend. If you use MongoD
 
 ---
 
-## 🛡️ Hardening & Stability Features
+##  Hardening & Stability Features
 
 - **Zero-Crash First Load**: Defensive coding (optional chaining/null checks) prevents "undefined" errors even on fresh machines.
 - **Graceful Error Handling**: Handlers for database connection failures and malformed localStorage data.
@@ -115,7 +115,7 @@ Ensure MongoDB is running locally before starting the backend. If you use MongoD
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Gopal Ramesh Tengale**
 Project for Internshala MERN Stack Capstone.
