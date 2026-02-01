@@ -11,7 +11,7 @@ const VideoCard = ({ video }) => {
             </div>
             <div className="video-info">
                 <div className="video-avatar">
-                    {video.uploader?.username?.charAt(0).toUpperCase()}
+                    {video.uploader?.username?.charAt(0).toUpperCase() || 'U'}
                 </div>
                 <div>
                     <h3 className="video-title">{video.title}</h3>

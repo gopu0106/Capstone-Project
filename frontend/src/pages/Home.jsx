@@ -57,7 +57,7 @@ const Home = () => {
             <div className="video-grid" style={{ padding: 0 }}>
                 {loading ? (
                     Array(8).fill(null).map((_, i) => <VideoSkeleton key={i} />)
-                ) : videos.length > 0 ? (
+                ) : (videos && videos.length > 0) ? (
                     videos.map(video => <VideoCard key={video._id} video={video} />)
                 ) : (
                     <div style={{ gridColumn: '1 / -1', textAlign: 'center', marginTop: '80px', color: 'var(--text-secondary)' }}>

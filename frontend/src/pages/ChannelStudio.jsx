@@ -197,11 +197,11 @@ const ChannelStudio = () => {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '32px' }}>
                 <div className="input-glass" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-sm)' }}>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase' }}>Total Videos</p>
-                    <h3 style={{ fontSize: '28px', fontWeight: '800', marginTop: '8px' }}>{videos.length}</h3>
+                    <h3 style={{ fontSize: '28px', fontWeight: '800', marginTop: '8px' }}>{(videos && videos.length) || 0}</h3>
                 </div>
                 <div className="input-glass" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-sm)' }}>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase' }}>Total Views</p>
-                    <h3 style={{ fontSize: '28px', fontWeight: '800', marginTop: '8px' }}>{formatViews(videos.reduce((acc, v) => acc + (v.views || 0), 0))}</h3>
+                    <h3 style={{ fontSize: '28px', fontWeight: '800', marginTop: '8px' }}>{formatViews(videos ? videos.reduce((acc, v) => acc + (v.views || 0), 0) : 0)}</h3>
                 </div>
                 <div className="input-glass" style={{ padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--glass-border)', boxShadow: 'var(--shadow-sm)' }}>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '600', textTransform: 'uppercase' }}>Subscribers</p>
@@ -220,7 +220,7 @@ const ChannelStudio = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {videos.map(video => (
+                        {videos && videos.map(video => (
                             <tr key={video._id} style={{ borderBottom: '1px solid var(--glass-border)', transition: 'background-color 0.2s' }} className="table-row-hover">
                                 <td style={{ padding: '16px 24px', display: 'flex', gap: '16px', alignItems: 'center' }}>
                                     <img src={video.thumbnailUrl} style={{ width: '120px', aspectRatio: '16/9', objectFit: 'cover', borderRadius: 'var(--radius-md)', border: '1px solid var(--glass-border)' }} alt="" />
@@ -241,7 +241,7 @@ const ChannelStudio = () => {
                         ))}
                     </tbody>
                 </table>
-                {videos.length === 0 && (
+                {(!videos || videos.length === 0) && (
                     <div style={{ textAlign: 'center', padding: '80px 40px', color: 'var(--text-secondary)' }}>
                         <div style={{ fontSize: '16px', fontWeight: '500' }}>No content available</div>
                         <p style={{ marginTop: '8px', fontSize: '14px' }}>Upload your first video to get started!</p>

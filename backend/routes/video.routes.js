@@ -134,6 +134,9 @@ router.delete('/:id', protect, async (req, res) => {
             return res.status(401).json({ message: 'User not authorized' });
         }
         
+        // Remove from channel
+        await Channel.findByIdAndUpdate(video.channelId, { $pull: { videos: video._id } });
+        
         await video.deleteOne();
         res.json({ message: 'Video removed' });
     } catch (error) {

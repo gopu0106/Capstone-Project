@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
-import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, Share2, MoreHorizontal, Edit3, Trash2 } from 'lucide-react';
 import { formatViews, formatTimeAgo } from '../utils/format';
 import RecommendedVideoCard from '../components/RecommendedVideoCard';
 import PlayerSkeleton from '../components/PlayerSkeleton';
@@ -18,6 +18,8 @@ const VideoPlayer = () => {
     const [comments, setComments] = useState([]);
     const [recommendedVideos, setRecommendedVideos] = useState([]);
     const [newComment, setNewComment] = useState('');
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editCommentText, setEditCommentText] = useState('');
 
     useEffect(() => {
         const fetchVideoData = async () => {
@@ -89,8 +91,27 @@ const VideoPlayer = () => {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
             setComments(comments.filter(c => c._id !== commentId));
+            showToast('Comment deleted');
         } catch (error) {
             console.error('Error deleting comment:', error);
+            showToast('Failed to delete comment', 'error');
+        }
+    };
+
+    const handleEditSubmit = async (commentId) => {
+        try {
+            const res = await axios.put(`http://localhost:5001/api/comments/${commentId}`, {
+                text: editCommentText
+            }, {
+                headers: { Authorization: `Bearer ${user.token}` }
+            });
+            setComments(comments.map(c => c._id === commentId ? { ...c, text: res.data.text } : c));
+            setEditingCommentId(null);
+            setEditCommentText('');
+            showToast('Comment updated');
+        } catch (error) {
+            console.error('Error updating comment:', error);
+            showToast('Failed to update comment', 'error');
         }
     };
 
@@ -122,7 +143,7 @@ const VideoPlayer = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', flexWrap: 'wrap', gap: '16px', paddingBottom: '16px', borderBottom: '1px solid var(--glass-border)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div className="video-avatar" style={{ width: '44px', height: '44px', fontSize: '18px' }}>
-                            {video.uploader?.username?.charAt(0).toUpperCase()}
+                            {video.uploader?.username?.charAt(0).toUpperCase() || 'U'}
                         </div>
                         <div style={{ marginLeft: '4px' }}>
                             <h4 style={{ fontWeight: '700', fontSize: '16px', color: 'var(--text-primary)' }}>{video.channelId?.channelName}</h4>
@@ -167,11 +188,11 @@ const VideoPlayer = () => {
                 </div>
 
                 <div style={{ marginTop: '32px' }}>
-                    <h3 style={{ fontSize: '20px', marginBottom: '24px', fontWeight: '800', letterSpacing: '-0.2px' }}>{comments.length} Comments</h3>
+                    <h3 style={{ fontSize: '20px', marginBottom: '24px', fontWeight: '800', letterSpacing: '-0.2px' }}>{(comments && comments.length) || 0} Comments</h3>
                     {user && (
                         <form onSubmit={handleCommentSubmit} style={{ display: 'flex', gap: '16px', marginBottom: '40px' }}>
                             <div className="video-avatar" style={{ border: 'none', boxShadow: 'none' }}>
-                                {user.username.charAt(0).toUpperCase()}
+                                {user?.username?.charAt(0).toUpperCase() || 'U'}
                             </div>
                             <div style={{ flex: 1 }}>
                                 <input 
@@ -198,33 +219,63 @@ const VideoPlayer = () => {
                         </form>
                     )}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                        {comments.map(comment => (
+                        {comments && comments.map(comment => (
                             <div key={comment._id} style={{ display: 'flex', gap: '16px' }}>
                                 <div className="video-avatar" style={{ border: 'none', boxShadow: 'none' }}>
-                                    {comment.userId?.username?.charAt(0).toUpperCase()}
+                                    {comment.userId?.username?.charAt(0).toUpperCase() || 'U'}
                                 </div>
                                 <div style={{ flex: 1 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                        <div>
+                                        <div style={{ flex: 1 }}>
                                             <p style={{ fontSize: '13px', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 @{comment.userId?.username} <span style={{ fontWeight: '500', color: 'var(--text-secondary)', fontSize: '12px' }}>{formatTimeAgo(comment.createdAt)}</span>
                                             </p>
-                                            <p style={{ fontSize: '15px', marginTop: '4px', lineHeight: '20px', color: 'var(--text-primary)' }}>{comment.text}</p>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '8px' }}>
-                                                <button className="btn-ghost" style={{ padding: '4px', borderRadius: '50%' }}><ThumbsUp size={16} /></button>
-                                                <button className="btn-ghost" style={{ padding: '4px', borderRadius: '50%' }}><ThumbsDown size={16} /></button>
-                                                <button className="btn-ghost" style={{ fontSize: '12px', fontWeight: '600', padding: '4px 8px' }}>Reply</button>
-                                            </div>
+                                            
+                                            {editingCommentId === comment._id ? (
+                                                <div style={{ marginTop: '8px' }}>
+                                                    <input 
+                                                        type="text" 
+                                                        value={editCommentText}
+                                                        onChange={(e) => setEditCommentText(e.target.value)}
+                                                        autoFocus
+                                                        style={{ width: '100%', backgroundColor: 'transparent', border: 'none', borderBottom: '1px solid var(--accent-primary)', padding: '4px 0', fontSize: '15px', color: 'white', outline: 'none' }}
+                                                    />
+                                                    <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                                                        <button className="btn-ghost" style={{ fontSize: '12px', fontWeight: '600' }} onClick={() => setEditingCommentId(null)}>Cancel</button>
+                                                        <button className="btn-ghost" style={{ fontSize: '12px', fontWeight: '600', color: 'var(--accent-primary)' }} onClick={() => handleEditSubmit(comment._id)}>Save</button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <p style={{ fontSize: '15px', marginTop: '4px', lineHeight: '20px', color: 'var(--text-primary)' }}>{comment.text}</p>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '8px' }}>
+                                                        <button className="btn-ghost" style={{ padding: '4px', borderRadius: '50%' }}><ThumbsUp size={16} /></button>
+                                                        <button className="btn-ghost" style={{ padding: '4px', borderRadius: '50%' }}><ThumbsDown size={16} /></button>
+                                                        <button className="btn-ghost" style={{ fontSize: '12px', fontWeight: '600', padding: '4px 8px' }}>Reply</button>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
-                                        {user && user._id === comment.userId?._id && (
-                                            <button onClick={() => handleDeleteComment(comment._id)} className="btn-icon" style={{ color: 'var(--text-secondary)', width: '32px', height: '32px' }}>
-                                                <MoreHorizontal size={18} />
-                                            </button>
+                                        
+                                        {user && user._id === comment.userId?._id && editingCommentId !== comment._id && (
+                                            <div className="comment-actions" style={{ display: 'flex', gap: '4px' }}>
+                                                <button onClick={() => { setEditingCommentId(comment._id); setEditCommentText(comment.text); }} className="btn-icon" style={{ color: 'var(--text-secondary)', width: '32px', height: '32px' }}>
+                                                    <Edit3 size={16} />
+                                                </button>
+                                                <button onClick={() => handleDeleteComment(comment._id)} className="btn-icon" style={{ color: 'var(--text-secondary)', width: '32px', height: '32px' }}>
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
                             </div>
                         ))}
+                        {(!comments || comments.length === 0) && (
+                            <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-secondary)' }}>
+                                <p>No comments yet. Be the first to comment.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -235,7 +286,7 @@ const VideoPlayer = () => {
                     {recommendedVideos.map(v => (
                         <RecommendedVideoCard key={v._id} video={v} />
                     ))}
-                    {recommendedVideos.length === 0 && (
+                    {(!recommendedVideos || recommendedVideos.length === 0) && (
                         <div style={{ padding: '24px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--glass-border)', backgroundColor: 'var(--bg-secondary)', textAlign: 'center' }}>
                             <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>No related videos found.</p>
                         </div>
